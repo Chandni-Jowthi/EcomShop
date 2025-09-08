@@ -110,17 +110,22 @@ export function CartProvider({ children }: CartProviderProps) {
       return;
     }
 
-    const { error } = await supabase
-      .from('cart_items')
-      .update({ quantity })
-      .eq('id', itemId);
+    try {
+      const { error } = await supabase
+        .from('cart_items')
+        .update({ quantity })
+        .eq('id', itemId);
 
-    if (error) {
+      if (error) {
+        console.error('Error updating cart item:', error);
+        throw error;
+      }
+      
+      await loadCartItems();
+    } catch (error) {
       console.error('Error updating cart item:', error);
       throw error;
     }
-    
-    await loadCartItems();
   };
 
   const removeFromCart = async (itemId: string) => {
