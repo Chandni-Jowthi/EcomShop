@@ -46,24 +46,30 @@ export function CartProvider({ children }: CartProviderProps) {
     if (!user) return;
 
     setLoading(true);
-    const { data, error } = await supabase
-      .from('cart_items')
-      .select(`
-        *,
-        products (
-          id,
-          name,
-          price,
-          image_url,
-          stock_quantity
-        )
-      `)
-      .eq('user_id', user.id);
+    try {
+      const { data, error } = await supabase
+        .from('cart_items')
+        .select(`
+          *,
+          products (
+            id,
+            name,
+            price,
+            image_url,
+            stock_quantity
+          )
+        `)
+        .eq('user_id', user.id);
 
-    if (error) {
+      if (error) {
+        console.error('Error loading cart items:', error);
+        setCartItems([]);
+      } else {
+        setCartItems(data || []);
+      }
+    } catch (error) {
       console.error('Error loading cart items:', error);
-    } else {
-      setCartItems(data || []);
+      setCartItems([]);
     }
     setLoading(false);
   };

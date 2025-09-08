@@ -82,6 +82,7 @@ export function ProductDetailPage() {
     setAddingToCart(true);
     try {
       await addToCart(product.id, quantity);
+      // Optional: Show success message or update UI
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {

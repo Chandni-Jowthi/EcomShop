@@ -57,7 +57,10 @@ export function ProductCard({ product, onWishlistChange }: ProductCardProps) {
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      // You could redirect to auth page or show a message
+      return;
+    }
 
     try {
       await addToCart(product.id);
