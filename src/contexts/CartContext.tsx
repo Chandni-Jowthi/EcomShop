@@ -110,36 +110,36 @@ export function CartProvider({ children }: CartProviderProps) {
       return;
     }
 
+    const { error } = await supabase
+      .from('cart_items')
+      .update({ quantity })
+      .eq('id', itemId);
+
+    if (error) {
+      console.error('Error updating cart item:', error);
+      throw error;
+    }
+    
+    await loadCartItems();
+  };
+
+  const removeFromCart = async (itemId: string) => {
     try {
       const { error } = await supabase
         .from('cart_items')
-        .update({ quantity })
+        .delete()
         .eq('id', itemId);
 
       if (error) {
-        console.error('Error updating cart item:', error);
+        console.error('Error removing from cart:', error);
         throw error;
       }
       
       await loadCartItems();
     } catch (error) {
-      console.error('Error updating cart item:', error);
-      throw error;
-    }
-  };
-
-  const removeFromCart = async (itemId: string) => {
-    const { error } = await supabase
-      .from('cart_items')
-      .delete()
-      .eq('id', itemId);
-
-    if (error) {
       console.error('Error removing from cart:', error);
       throw error;
     }
-    
-    await loadCartItems();
   };
 
   const clearCart = async () => {
